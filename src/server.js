@@ -9,9 +9,11 @@ import { routes } from "./routes.js"
 const server = http.createServer(async (req, res) => {
   await json(req, res)
   const { method, url } = req
-  const route = routes.find(route => route.method === method && route.path === url)
+  const route = routes.find(route => route.method === method && route.path.test(url))
 
   if (route) {
+    const routeParams = req.url.match(route.path)
+    console.log(routeParams)
     return route.handler(req, res)
   }
   return res.writeHead(404).end()
